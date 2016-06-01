@@ -92,22 +92,7 @@ def run():
     )
     args = parser.parse_args()
 
-    split_url = urlparse.urlsplit(args.target)
-    if split_url.scheme:
-        target = split_url.netloc
-        prefix = split_url.path
-    else:
-        target = args.target
-        prefix = args.prefix
-
-    if ':' in target and '[' not in target:
-        host, port = target.rsplit(':', 1)
-    elif ']:' in target:
-        host, port = target.rsplit(':', 1)
-    else:
-        host = target
-        port = None
-    host = host.replace('[', '').replace(']', '')
+    host, port, prefix = parse_url(args.target)
 
     # Initialize response handlers.
     custom_response_handlers = []
@@ -149,6 +134,27 @@ def load_response_handlers(import_path):
         if callable(handlers):
             handlers = handlers()
     return handlers
+
+
+def parse_url(url):
+    split_url = urlparse.urlsplit(url)
+    if split_url.scheme:
+        target = split_url.netloc
+        prefix = split_url.path
+    else:
+        target = args.target
+        prefix = args.prefix
+
+    if ':' in target and '[' not in target:
+        host, port = target.rsplit(':', 1)
+    elif ']:' in target:
+        host, port = target.rsplit(':', 1)
+    else:
+        host = target
+        port = None
+    host = host.replace('[', '').replace(']', '')
+
+    return host, port, prefix
 
 
 if __name__ == '__main__':
