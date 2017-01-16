@@ -34,6 +34,12 @@ class FakeFixture(fixture.GabbiFixture):
         self.mock.stop()
 
 
+class BrokenFixture(FakeFixture):
+
+    def start_fixture(self):
+        raise RuntimeError("broken fixture")
+
+
 class FixtureTest(unittest.TestCase):
 
     def setUp(self):
@@ -56,3 +62,18 @@ class FixtureTest(unittest.TestCase):
         self.magic.start.assert_called_once_with()
         self.magic.stop.assert_called_once_with()
         self.magic.handle.assert_called_once_with(ValueError)
+
+
+class BrokenFixtureTest(unittest.TestCase):
+
+    def setUp(self):
+        super(FixtureTest, self).setUp()
+        self.magic = mock.MagicMock(['start', 'stop', 'handle'])
+
+    def test_broken_fixture(self):
+        try:
+            with BrokenFixture(self.magic):
+                raise ValueError()
+        except ValueError:
+            pass
+        self.magic.start.assert_called_once_with(ValueError)
