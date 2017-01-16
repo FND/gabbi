@@ -1,0 +1,6 @@
+fixtures:
+- BrokenFixture
+
+tests:
+- name: dummy
+  GET: /
