@@ -12,6 +12,8 @@
 # under the License.
 """Core response handlers."""
 
+# import six
+
 from gabbi.handlers import base
 
 
@@ -22,6 +24,8 @@ class StringResponseHandler(base.ResponseHandler):
     test_key_value = []
 
     def action(self, test, expected, value=None):
+        # if isinstance(expected, six.string_types):
+        #     expected = [expected]
         expected = test.replace_template(expected)
         test.assert_in_or_print_output(expected, test.output)
 

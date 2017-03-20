@@ -60,6 +60,14 @@ class HandlersTest(unittest.TestCase):
         self.test.output = 'alpha\nbeta\n'
         self._assert_handler(handler)
 
+    def test_response_string_list_coercion(self):
+        handler = core.StringResponseHandler()
+        self.test.content_type = "text/plain"
+        self.test.response_data = None
+        self.test.test_data = {'response_strings': 'omega'}
+        self.test.output = 'omega\n'
+        self._assert_handler(handler)
+
     def test_response_strings_fail(self):
         handler = core.StringResponseHandler()
         self.test.content_type = "text/plain"
